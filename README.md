@@ -86,9 +86,9 @@ stride/skip of numbers: 1024 (≈ 4096 bytes/step)  visited=65536  time=0.389542
 **Observations from these results:**
 
 - **L1 cache (strides 1-16)**: Very fast access times (~1 ns/elem), demonstrating excellent cache locality
+- **Cache line boundary**: A big drop often starts once stride reaches ~16 ints (64B), because you stop benefiting from pulling a whole cache line. At stride 16, you access one element per 64-byte cache line. Beyond that, you skip cache lines, causing the performance drop seen at stride 32 (4.69 ns/elem vs. 1.14 ns/elem at stride 16)
 - **L2 cache (strides 32-128)**: Noticeable performance drop (~4-6 ns/elem) when exceeding L1 cache line boundaries
 - **L3 cache (strides 256-1024)**: Similar performance to L2 (~4-6 ns/elem), indicating effective L3 cache utilization
-- The transition from L1 to L2 occurs around stride 32 (128 bytes), showing the cache line size boundary
 - Total time decreases with larger strides because fewer elements are accessed, but per-element cost increases
 
 ## Technical Details
