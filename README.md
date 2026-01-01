@@ -65,6 +65,32 @@ As stride increases, you should observe:
 - Transitions between cache levels
 - Performance degradation when exceeding cache line sizes
 
+### Sample Output
+
+Here's an example of actual benchmark results:
+
+```
+stride/skip of numbers: 1 (≈ 4 bytes/step)  visited=67108864  time=124.998 ms  ns/elem=1.86261 likely in (L1) cache
+stride/skip of numbers: 2 (≈ 8 bytes/step)  visited=33554432  time=59.954 ms  ns/elem=1.78677 likely in (L1) cache
+stride/skip of numbers: 4 (≈ 16 bytes/step)  visited=16777216  time=16.6611 ms  ns/elem=0.99308 likely in (L1) cache
+stride/skip of numbers: 8 (≈ 32 bytes/step)  visited=8388608  time=8.58846 ms  ns/elem=1.02382 likely in (L1) cache
+stride/skip of numbers: 16 (≈ 64 bytes/step)  visited=4194304  time=4.78008 ms  ns/elem=1.13966 likely in (L1) cache
+stride/skip of numbers: 32 (≈ 128 bytes/step)  visited=2097152  time=9.83192 ms  ns/elem=4.68822 likely in (L2) cache
+stride/skip of numbers: 64 (≈ 256 bytes/step)  visited=1048576  time=5.54054 ms  ns/elem=5.28387 likely in (L2) cache
+stride/skip of numbers: 128 (≈ 512 bytes/step)  visited=524288  time=3.03037 ms  ns/elem=5.77998 likely in (L2) cache
+stride/skip of numbers: 256 (≈ 1024 bytes/step)  visited=262144  time=1.21804 ms  ns/elem=4.64646 likely in (L3) cache
+stride/skip of numbers: 512 (≈ 2048 bytes/step)  visited=131072  time=0.739583 ms  ns/elem=5.64257 likely in (L3) cache
+stride/skip of numbers: 1024 (≈ 4096 bytes/step)  visited=65536  time=0.389542 ms  ns/elem=5.94394 likely in (L3) cache
+```
+
+**Observations from these results:**
+
+- **L1 cache (strides 1-16)**: Very fast access times (~1 ns/elem), demonstrating excellent cache locality
+- **L2 cache (strides 32-128)**: Noticeable performance drop (~4-6 ns/elem) when exceeding L1 cache line boundaries
+- **L3 cache (strides 256-1024)**: Similar performance to L2 (~4-6 ns/elem), indicating effective L3 cache utilization
+- The transition from L1 to L2 occurs around stride 32 (128 bytes), showing the cache line size boundary
+- Total time decreases with larger strides because fewer elements are accessed, but per-element cost increases
+
 ## Technical Details
 
 ### Cache Hierarchy Thresholds
